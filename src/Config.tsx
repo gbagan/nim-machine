@@ -1,4 +1,4 @@
-import { range } from 'lodash';
+import range from 'lodash.range';
 import { Component, For, Match, Switch } from 'solid-js';
 import { produce } from "solid-js/store";
 import { Adversary, GraphType, Config, KingType, NimType } from './model';
