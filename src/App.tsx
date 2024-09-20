@@ -2,9 +2,9 @@ import { createMemo, Component } from 'solid-js';
 import { createStore, produce } from "solid-js/store";
 import { nimDisplayer, kingDisplayer, randomPlays, expertPlays, machinePlays } from './graph';
 import { Config, initMachine, State } from './model';
-import { Card } from './UI';
+import Card from './Card';
 import ConfigView from './Config';
-import LegendView from './Legend';
+import Legend from './Legend';
 import Score from './Score';
 import MachineView from './Machine';
 import { createTimer } from '@solid-primitives/timer';
@@ -171,7 +171,7 @@ const App: Component = () => {
           <Score victories={state.victories} losses={state.losses}/>
         </div>
       </Card>
-      <LegendView legend={displayer().legend} colors={state.colors} setColor={setColor}/>
+      <Legend legend={displayer().legend} colors={state.colors} setColor={setColor}/>
       <ConfigView config={state.config} isRunning={state.isRunning} actions={actions}/>
     </div>
   )

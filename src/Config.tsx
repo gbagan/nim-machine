@@ -2,7 +2,7 @@ import range from 'lodash.range';
 import { Component, For, Match, Switch } from 'solid-js';
 import { produce } from "solid-js/store";
 import { Adversary, GraphType, Config, KingType, NimType } from './model';
-import { buttonClass, Card, checkboxClass, inputNumberClass, selectClass } from './UI';
+import Card from './Card';
 
 function changeMoves(moves: number[], elem: number, b: boolean): number[] {
   return b ? [...moves, elem].toSorted() : moves.filter(i => i !== elem);
@@ -34,7 +34,7 @@ const ConfigView: ConfigComponent = props => {
       <div class="grid grid-cols-2 gap-4">
         <div>type de jeu</div>
         <select
-          class={selectClass}
+          class="select"
           value={props.config.graphType.type}
           onChange={e => props.actions.changeConfig(c => setGraphType(c, e.currentTarget.value))}
         >
@@ -45,7 +45,7 @@ const ConfigView: ConfigComponent = props => {
           <Match when={props.config.graphType.type === "nim"}>
             <div>Nombre de casiers</div>
             <select
-              class={selectClass}
+              class="select"
               value={(props.config.graphType as NimType).size}
               onChange={e => props.actions.changeConfig(produce(conf => {
                 (conf.graphType as NimType).size = Number(e.currentTarget.value);
@@ -67,7 +67,7 @@ const ConfigView: ConfigComponent = props => {
                         const graphType = conf.graphType as NimType;
                         graphType.moves = changeMoves(graphType.moves, i, e.currentTarget.checked)
                       }))}
-                      class={checkboxClass}
+                      class="checkbox"
                     />
                     <span class="ml-2 text-sm font-medium text-gray-900">{i}</span>
                   </label>
@@ -78,7 +78,7 @@ const ConfigView: ConfigComponent = props => {
           <Match when={props.config.graphType.type === "king"}>
             <div>Hauteur de la grille</div>
             <select
-              class={selectClass}
+              class="select"
               value={(props.config.graphType as KingType).height}
               onChange={e => props.actions.changeConfig(produce(conf => {
                 (conf.graphType as KingType).height = Number(e.currentTarget.value);
@@ -90,7 +90,7 @@ const ConfigView: ConfigComponent = props => {
             </select>
             <div>Largeur de la grille</div>
             <select
-              class={selectClass}
+              class="select"
               value={(props.config.graphType as KingType).width}
               onChange={e => props.actions.changeConfig(produce(conf => {
                 (conf.graphType as KingType).width = Number(e.currentTarget.value);
@@ -104,7 +104,7 @@ const ConfigView: ConfigComponent = props => {
         </Switch>
         <div>Adversaire</div>
         <select
-          class={selectClass}
+          class="select"
           value={props.config.adversary}
           onChange={e => props.actions.changeConfig(conf => (
             {...conf, adversary: e.currentTarget.value as Adversary}
@@ -117,7 +117,7 @@ const ConfigView: ConfigComponent = props => {
         <div>Billes par couleur</div>
         <input
           type="number"
-          class={inputNumberClass}
+          class="input-number"
           min="2"
           max="10"
           value={props.config.ballsPerColor}
@@ -128,7 +128,7 @@ const ConfigView: ConfigComponent = props => {
         <div>Récompense</div>
         <input
           type="number"
-          class={inputNumberClass}
+          class="input-number"
           min="1"
           value={props.config.reward}
           onChange={e => props.actions.changeConfig(c => (
@@ -138,7 +138,7 @@ const ConfigView: ConfigComponent = props => {
         <div>Pénalité</div>
         <input
           type="number"
-          class={inputNumberClass}
+          class="input-number"
           max="0"
           value={props.config.penalty}
           onChange={e => props.actions.changeConfig(c => (
@@ -147,7 +147,7 @@ const ConfigView: ConfigComponent = props => {
         />
         <div>La machine commence</div>
         <select
-          class={selectClass}
+          class="select"
           value={props.config.machineStarts ? "y" : "n"}
           onChange={e => props.actions.changeConfig(c => (
             {...c, machineStarts: e.currentTarget.value === "y"}
@@ -159,7 +159,7 @@ const ConfigView: ConfigComponent = props => {
         <Switch>
           <Match when={props.isRunning}>
             <button
-              class={buttonClass}
+              class="btn"
               onClick={props.actions.stopMachine}
             >
               Arrêter la machine
@@ -167,7 +167,7 @@ const ConfigView: ConfigComponent = props => {
           </Match>
           <Match when={!props.isRunning}>
             <button
-              class={buttonClass}
+              class="btn"
               onClick={props.actions.startMachine}
             >
               Lancer la machine
@@ -175,7 +175,7 @@ const ConfigView: ConfigComponent = props => {
           </Match>
         </Switch>
         <button
-          class={buttonClass}
+          class="btn"
           onPointerDown={() => props.actions.setFastMode(true)}
           onPointerUp={() => props.actions.setFastMode(false)}
           onPointerLeave={() => props.actions.setFastMode(false)}

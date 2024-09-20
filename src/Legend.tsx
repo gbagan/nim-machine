@@ -1,5 +1,5 @@
 import { Component } from "solid-js";
-import { Card } from "./UI";
+import Card from "./Card";
 import { Legend } from "./graph";
 
 type LegendComponent = Component <{
