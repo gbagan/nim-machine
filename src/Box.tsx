@@ -1,4 +1,4 @@
-import { Component, createMemo, Index, Show } from 'solid-js';
+import { Component, createMemo, For, Index, Show } from 'solid-js';
 import shuffle from 'lodash.shuffle';
 import { GraphDisplayer, MachineBox } from './graph';
 import { pseudoRandom, replicate } from './util';
@@ -12,6 +12,7 @@ type BoxComponent = Component <{
 
 const Box: BoxComponent = props => {
   const position = createMemo(() => props.displayer.position(props.idx));
+  const label = () => props.displayer.vertexLabel(props.idx);
   const balls = createMemo(() => shuffle(props.box.flatMap(({nbBalls, edge}) => replicate(nbBalls, edge))));
   const height = () =>  Math.min(95, balls().length);
   const segments = () => {
@@ -36,14 +37,16 @@ const Box: BoxComponent = props => {
           stroke="#000"
           fill="transparent"
         />
-        { balls().map((color, i) => (
-          <circle
-            cx={15 + pseudoRandom(props.idx + i) * 71}
-            cy={100 - pseudoRandom(10 + props.idx + i) * height()}
-            r="5"
-            fill={props.colors[color]}
-          />
-        ))}
+        <For each={balls()}>
+          {((color, i) => (
+            <circle
+              cx={15 + pseudoRandom(props.idx + i()) * 71}
+              cy={100 - pseudoRandom(10 + props.idx + i()) * height()}
+              r="5"
+              fill={props.colors[color]}
+            />
+          ))}
+        </For>
         <Index each={segments()}>
           {seg => (
             <rect
@@ -56,6 +59,9 @@ const Box: BoxComponent = props => {
             />
           )}
         </Index>
+        <Show when={label()}>
+          <text x="50" y="150">{label()}</text>
+        </Show>
       </g>
     </Show>
   )

@@ -9,10 +9,10 @@ export type NimType = {
 }
 
 export type KingType = {
-    type: "king",
-    width: number,
-    height: number
-  }
+  type: "king",
+  width: number,
+  height: number
+}
 
 export type GraphType = NimType | KingType;
 
