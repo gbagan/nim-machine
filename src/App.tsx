@@ -1,8 +1,8 @@
-import { createMemo, Component, createSignal } from 'solid-js';
+import { createMemo, Component } from 'solid-js';
 import { createStore, produce } from "solid-js/store";
-import { Card } from './UI';
 import { nimDisplayer, kingDisplayer, randomPlays, expertPlays, machinePlays } from './graph';
 import { Config, initMachine, Model } from './model';
+import { Card } from './UI';
 import ConfigView from './Config';
 import LegendView from './Legend';
 import Score from './Score';
@@ -28,8 +28,8 @@ const initConfig: Config = {
 
 const initModel: Model = initMachine({
   config: initConfig,
-  nbVictories: 0,
-  nbLosses: 0,
+  victories: 0,
+  losses: 0,
   machine: [],
   isRunning: false,
   colors: baseColors,
@@ -51,7 +51,7 @@ const App: Component = () => {
     } else {
       return graphType.width * graphType.height - 1;
     }
-  } 
+  }
 
   const displayer = createMemo(() => {
     const graphType = model.config.graphType;
@@ -82,6 +82,7 @@ const App: Component = () => {
   const runGame = () => {
     let isMachineTurn = model.config.machineStarts;
     let pos = source();
+    // simule une partie et place la liste des coups joués dans moves
     const moves: {pos: number, edge: number, isMachineTurn: boolean}[] = [];
     while(true) {
       const move = isMachineTurn ? machinePlays(machine(), pos) : adversaryPlays(pos);
@@ -96,9 +97,9 @@ const App: Component = () => {
     
     setModel(produce(model => {
       if (win) {
-        model.nbVictories++;
+        model.victories++;
       } else {
-        model.nbLosses++;
+        model.losses++;
       }
       // ajuste les billes
       for (const {pos, edge, isMachineTurn} of moves) {
@@ -167,7 +168,7 @@ const App: Component = () => {
             colors={model.colors}
             machine={model.machine}
           />
-          <Score nbVictories={model.nbVictories} nbLosses={model.nbLosses}/>
+          <Score victories={model.victories} losses={model.losses}/>
         </div>
       </Card>
       <LegendView legend={displayer().legend} colors={model.colors} setColor={setColor}/>

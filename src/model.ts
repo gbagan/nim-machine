@@ -27,11 +27,11 @@ export type Config = {
 
 export type Model = {
   config: Config,
-  nbVictories: number,
-  nbLosses: number,
+  victories: number,
+  losses: number,
   machine: Machine,
-  isRunning: boolean,
   colors: string[],
+  isRunning: boolean,
   fastMode: boolean,
 }
 
@@ -48,5 +48,5 @@ export function initMachine(model: Model): Model {
   const graph = getGraph(model);
   const machine = graphToMachine(graph, model.config.ballsPerColor);
 
-  return { ...model, machine, nbVictories: 0, nbLosses: 0, isRunning: false }
+  return { ...model, machine, victories: 0, losses: 0, isRunning: false }
 }

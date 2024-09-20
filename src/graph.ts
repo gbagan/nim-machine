@@ -82,6 +82,7 @@ export function kingDisplayer(width: number, height: number): GraphDisplayer {
   })
 }
 
+// joue un coup aléatoire, renvoit undefined si aucun coup n'existe
 export function randomPlays(machine: Machine, v: number): Edge | undefined {
   const edges = machine[v];
   if (edges.length === 0) {
