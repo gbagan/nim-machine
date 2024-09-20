@@ -25,7 +25,7 @@ export type Config = {
   machineStarts: boolean
 }
 
-export type Model = {
+export type State = {
   config: Config,
   victories: number,
   losses: number,
@@ -35,8 +35,8 @@ export type Model = {
   fastMode: boolean,
 }
 
-function getGraph(model: Model): Graph {
-  const graphType = model.config.graphType;
+function getGraph(state: State): Graph {
+  const graphType = state.config.graphType;
   if (graphType.type === "nim") {
     return nimGraph(graphType.size, graphType.moves)
   } else {
@@ -44,9 +44,9 @@ function getGraph(model: Model): Graph {
   }
 }
  
-export function initMachine(model: Model): Model {
-  const graph = getGraph(model);
-  const machine = graphToMachine(graph, model.config.ballsPerColor);
+export function initMachine(state: State): State {
+  const graph = getGraph(state);
+  const machine = graphToMachine(graph, state.config.ballsPerColor);
 
-  return { ...model, machine, victories: 0, losses: 0, isRunning: false }
+  return { ...state, machine, victories: 0, losses: 0, isRunning: false }
 }

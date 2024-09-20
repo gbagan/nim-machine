@@ -1,7 +1,7 @@
 import { createMemo, Component } from 'solid-js';
 import { createStore, produce } from "solid-js/store";
 import { nimDisplayer, kingDisplayer, randomPlays, expertPlays, machinePlays } from './graph';
-import { Config, initMachine, Model } from './model';
+import { Config, initMachine, State } from './model';
 import { Card } from './UI';
 import ConfigView from './Config';
 import LegendView from './Legend';
@@ -26,7 +26,7 @@ const initConfig: Config = {
   machineStarts: true,
 }
 
-const initModel: Model = initMachine({
+const initState: State = initMachine({
   config: initConfig,
   victories: 0,
   losses: 0,
@@ -39,13 +39,13 @@ const initModel: Model = initMachine({
 
 const App: Component = () => {
   // model
-  const [model, setModel] = createStore(initModel);
+  const [state, setState] = createStore(initState);
 
   // derived
-  const machine = () => model.machine;
+  const machine = () => state.machine;
 
   const source = () => {
-    const graphType = model.config.graphType;
+    const graphType = state.config.graphType;
     if (graphType.type === "nim") {
       return graphType.size;
     } else {
@@ -54,7 +54,7 @@ const App: Component = () => {
   }
 
   const displayer = createMemo(() => {
-    const graphType = model.config.graphType;
+    const graphType = state.config.graphType;
     if (graphType.type === "nim") {
       return nimDisplayer(graphType.moves)
     } else {
@@ -72,7 +72,7 @@ const App: Component = () => {
   });
 
   const adversaryPlays = (pos: number) => {
-    switch(model.config.adversary) {
+    switch(state.config.adversary) {
       case "random": return randomPlays(machine(), pos);
       case "expert": return expertPlays(machine(), losingPositions(), pos);
       case "machine": return machinePlays(machine(), pos);
@@ -80,7 +80,7 @@ const App: Component = () => {
   }
 
   const runGame = () => {
-    let isMachineTurn = model.config.machineStarts;
+    let isMachineTurn = state.config.machineStarts;
     let pos = source();
     // simule une partie et place la liste des coups joués dans moves
     const moves: {pos: number, edge: number, isMachineTurn: boolean}[] = [];
@@ -95,60 +95,60 @@ const App: Component = () => {
     }
     const win = isMachineTurn;
     
-    setModel(produce(model => {
+    setState(produce(state => {
       if (win) {
-        model.victories++;
+        state.victories++;
       } else {
-        model.losses++;
+        state.losses++;
       }
       // ajuste les billes
       for (const {pos, edge, isMachineTurn} of moves) {
-        model.machine[pos][edge].nbBalls = Math.max(0, 
-          model.machine[pos][edge].nbBalls + (
-            !isMachineTurn && model.config.adversary !== "machine"
+        state.machine[pos][edge].nbBalls = Math.max(0, 
+          state.machine[pos][edge].nbBalls + (
+            !isMachineTurn && state.config.adversary !== "machine"
             ? 0
             : win === isMachineTurn
-            ? model.config.reward
-            : model.config.penalty
+            ? state.config.reward
+            : state.config.penalty
           ) 
         );
       }
       // si il n'y a plus de balles dans un casier, on en remet
-      const n = model.machine.length;
+      const n = state.machine.length;
       for (let i = 0; i < n; i++) {
-        if (model.machine[i].every(({nbBalls}) => nbBalls === 0)) {
-          const m = model.machine[i].length;
+        if (state.machine[i].every(({nbBalls}) => nbBalls === 0)) {
+          const m = state.machine[i].length;
           for (let j = 0; j < m; j++) {
-            model.machine[i][j].nbBalls = model.config.ballsPerColor;
+            state.machine[i][j].nbBalls = state.config.ballsPerColor;
           }
         }
       }
     }));
   }
   
-  createTimer(runGame, () => model.isRunning && (model.fastMode ? 100 : 500), setInterval);
+  createTimer(runGame, () => state.isRunning && (state.fastMode ? 100 : 500), setInterval);
 
   // actions
-  const changeConfig = (f: (c: Config) => Config) => {
-    const newConfig = f(model.config);
-    const newModel = initMachine({...model, config: newConfig});
-    setModel(newModel);
+  const changeConfig = (fn: (c: Config) => Config) => {
+    const newConfig = fn(state.config);
+    const newModel = initMachine({...state, config: newConfig});
+    setState(newModel);
   }
 
   const setColor = (idx: number, color: string) => {
-    setModel("colors", idx, color);
+    setState("colors", idx, color);
   }
 
   const startMachine = () => {
-    setModel("isRunning", true)
+    setState("isRunning", true)
   }
 
   const stopMachine = () => {
-    setModel("isRunning", false)
+    setState("isRunning", false)
   }
 
   const setFastMode = (fastMode: boolean) => {
-    setModel("fastMode", fastMode)
+    setState("fastMode", fastMode)
   }
 
   const actions = {
@@ -165,14 +165,14 @@ const App: Component = () => {
         <div class="flex flex-col">
           <MachineView
             displayer={displayer()}
-            colors={model.colors}
-            machine={model.machine}
+            colors={state.colors}
+            machine={state.machine}
           />
-          <Score victories={model.victories} losses={model.losses}/>
+          <Score victories={state.victories} losses={state.losses}/>
         </div>
       </Card>
-      <LegendView legend={displayer().legend} colors={model.colors} setColor={setColor}/>
-      <ConfigView config={model.config} isRunning={model.isRunning} actions={actions}/>
+      <LegendView legend={displayer().legend} colors={state.colors} setColor={setColor}/>
+      <ConfigView config={state.config} isRunning={state.isRunning} actions={actions}/>
     </div>
   )
 }
