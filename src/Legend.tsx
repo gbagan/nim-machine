@@ -1,4 +1,4 @@
-import { Component } from "solid-js";
+import { Component, For } from "solid-js";
 import Card from "./Card";
 import { Legend } from "./graph";
 
@@ -11,17 +11,19 @@ type LegendComponent = Component <{
 const LegendView: LegendComponent = props => (
   <Card title="Légende">
     <div class="grid grid-cols-2 gap-4">
-      {props.legend.map(({edge, name}, idx) => (
-        <>
-          <input
-            type="color"
-            class="inline w-12 h-12"
-            value={props.colors[edge] ?? "#000000"}
-            onChange={e => props.setColor(idx, e.currentTarget.value)}
-          />
+      <For each={props.legend}>
+        {({edge, name}) => (
+          <>
+            <input
+              type="color"
+              class="inline w-12 h-12"
+              value={props.colors[edge] ?? "#000000"}
+              onChange={e => props.setColor(edge, e.currentTarget.value)}
+            />
           <span class="text-2xl"> : {name}</span>
         </>
-      ))}
+        )}
+      </For>
     </div>
   </Card>
 )

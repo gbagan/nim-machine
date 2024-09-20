@@ -38,16 +38,16 @@ export function nimGraph(n: number, moves: number[]): Graph {
 
 export function kingGraph(width: number, height: number): Graph {
   const nodes: Edge[][] = new Array(width * height);
-  for (let i = 0; i < width; i++) {
-    for (let j = 0; j <  height; j++) {
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y <  height; y++) {
       const node: Edge[] = [];
-      if (i > 0)
-        node.push({edge: 0, dest: j * width - i - 1});
-      if (j > 0)
-        node.push({edge: 1, dest: (j-1) * width - i});
-      if (i > 0 && j > 0)
-        node.push({edge: 2, dest: (j-1) * width - i - 1});
-      nodes[j * width + i] = node;
+      if (x > 0)
+        node.push({edge: 0, dest: y * width + x - 1});
+      if (x > 0 && y > 0)
+        node.push({edge: 1, dest: (y-1) * width + x - 1});
+      if (y > 0)
+        node.push({edge: 2, dest: (y-1) * width + x});
+      nodes[y * width + x] = node;
     }
   }
   return {nodes};
@@ -76,7 +76,7 @@ export function kingDisplayer(width: number, height: number): GraphDisplayer {
     position: v => 
       v == 0
         ? undefined
-        : { x: 50 + 180 * (v % width), y: 50 + 180 * (height - 1 - (v / width | 0))},
+        : { x: 50 + 180 * (v % width), y: 20 + 180 * (height - 1 - (v / width | 0))},
     legend: [{edge: 0, name: "⇐"}, {edge: 1, name: "⇙"}, {edge: 2, name: "⇓"}],
     vertexLabel: v => undefined
   })

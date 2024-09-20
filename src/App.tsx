@@ -103,8 +103,10 @@ const App: Component = () => {
       }
       // ajuste les billes
       for (const {pos, edge, isMachineTurn} of moves) {
-        state.machine[pos][edge].nbBalls = Math.max(0, 
-          state.machine[pos][edge].nbBalls + (
+        const box = state.machine[pos];
+        const i = box.findIndex(e => e.edge === edge);
+        box[i].nbBalls = Math.max(0, 
+          box[i].nbBalls + (
             !isMachineTurn && state.config.adversary !== "machine"
             ? 0
             : win === isMachineTurn
