@@ -1,7 +1,7 @@
 import { createMemo, Component } from 'solid-js';
 import { createStore, produce } from "solid-js/store";
-import { nimDisplayer, kingDisplayer, randomPlays, expertPlays, machinePlays } from './graph';
-import { Config, initMachine, State } from './model';
+import { nimDisplayer, kingDisplayer, randomPlays, expertPlays, machinePlays, graphToMachine } from './graph';
+import { Config, getGraph, initMachine, State } from './model';
 import Card from './Card';
 import ConfigView from './Config';
 import Legend from './Legend';
@@ -38,12 +38,10 @@ const initState: State = initMachine({
 
 
 const App: Component = () => {
-  // model
+  // state
   const [state, setState] = createStore(initState);
 
   // derived
-  const machine = () => state.machine;
-
   const source = () => {
     const graphType = state.config.graphType;
     if (graphType.type === "nim") {
@@ -63,29 +61,30 @@ const App: Component = () => {
   })
 
   const losingPositions = createMemo(() => {
-    const n = machine().length;
+    const n = state.machine.length;
     const positions: boolean[] = new Array(n);
     for (let i = 0; i < n; i++) {
-      positions[i] = machine()[i].every(({dest}) => !positions[dest])
+      positions[i] = state.machine[i].every(({dest}) => !positions[dest])
     }
     return positions;
   });
 
   const adversaryPlays = (pos: number) => {
     switch(state.config.adversary) {
-      case "random": return randomPlays(machine(), pos);
-      case "expert": return expertPlays(machine(), losingPositions(), pos);
-      case "machine": return machinePlays(machine(), pos);
+      case "random": return randomPlays(state.machine, pos);
+      case "expert": return expertPlays(state.machine, losingPositions(), pos);
+      case "machine": return machinePlays(state.machine, pos);
     }
   }
 
+  // actions
   const runGame = () => {
     let isMachineTurn = state.config.machineStarts;
     let pos = source();
     // simule une partie et place la liste des coups joués dans moves
     const moves: {pos: number, edge: number, isMachineTurn: boolean}[] = [];
     while(true) {
-      const move = isMachineTurn ? machinePlays(machine(), pos) : adversaryPlays(pos);
+      const move = isMachineTurn ? machinePlays(state.machine, pos) : adversaryPlays(pos);
       if (move === undefined) {
         break;
       }
@@ -105,7 +104,7 @@ const App: Component = () => {
       for (const {pos, edge, isMachineTurn} of moves) {
         const box = state.machine[pos];
         const i = box.findIndex(e => e.edge === edge);
-        box[i].nbBalls = Math.max(0, 
+        box[i].nbBalls = Math.max(0,
           box[i].nbBalls + (
             !isMachineTurn && state.config.adversary !== "machine"
             ? 0
@@ -115,7 +114,7 @@ const App: Component = () => {
           ) 
         );
       }
-      // si il n'y a plus de balles dans un casier, on en remet
+      // si il n'y a plus de billes dans un casier, on en remet
       const n = state.machine.length;
       for (let i = 0; i < n; i++) {
         if (state.machine[i].every(({nbBalls}) => nbBalls === 0)) {
@@ -130,11 +129,15 @@ const App: Component = () => {
   
   createTimer(runGame, () => state.isRunning && (state.fastMode ? 100 : 500), setInterval);
 
-  // actions
   const changeConfig = (fn: (c: Config) => Config) => {
-    const newConfig = fn(state.config);
-    const newModel = initMachine({...state, config: newConfig});
-    setState(newModel);
+    setState(produce(state => {
+      state.config = fn(state.config);
+      state.victories = 0;
+      state.losses = 0;
+      state.isRunning = false;
+      const graph = getGraph(state);
+      state.machine = graphToMachine(graph, state.config.ballsPerColor);
+    }))
   }
 
   const setColor = (idx: number, color: string) => {

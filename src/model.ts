@@ -35,7 +35,7 @@ export type State = {
   fastMode: boolean,
 }
 
-function getGraph(state: State): Graph {
+export function getGraph(state: State): Graph {
   const graphType = state.config.graphType;
   if (graphType.type === "nim") {
     return nimGraph(graphType.size, graphType.moves)
@@ -47,6 +47,5 @@ function getGraph(state: State): Graph {
 export function initMachine(state: State): State {
   const graph = getGraph(state);
   const machine = graphToMachine(graph, state.config.ballsPerColor);
-
-  return { ...state, machine, victories: 0, losses: 0, isRunning: false }
+  return { ...state, machine }
 }
