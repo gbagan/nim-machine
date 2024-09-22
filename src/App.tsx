@@ -1,5 +1,5 @@
-import { createMemo, Component } from 'solid-js';
-import { createStore, produce } from "solid-js/store";
+import { createMemo, Component, batch } from 'solid-js';
+import { createStore, produce, SetStoreFunction } from "solid-js/store";
 import { nimDisplayer, kingDisplayer, randomPlays, expertPlays, machinePlays, graphToMachine } from './graph';
 import { Config, getGraph, initMachine, State } from './model';
 import Card from './Card';
@@ -129,15 +129,17 @@ const App: Component = () => {
   
   createTimer(runGame, () => state.isRunning && (state.fastMode ? 100 : 500), setInterval);
 
-  const changeConfig = (fn: (c: Config) => Config) => {
-    setState(produce(state => {
-      state.config = fn(state.config);
-      state.victories = 0;
-      state.losses = 0;
-      state.isRunning = false;
-      const graph = getGraph(state);
-      state.machine = graphToMachine(graph, state.config.ballsPerColor);
-    }))
+  const changeConfig: SetStoreFunction<Config> = (...configSetterArgs: any[]) => {
+    batch(() => {
+      (setState as any)("config", ...configSetterArgs);
+      setState(produce(state => {
+        state.victories = 0;
+        state.losses = 0;
+        state.isRunning = false;
+        const graph = getGraph(state);
+        state.machine = graphToMachine(graph, state.config.ballsPerColor);
+      }))
+    })
   }
 
   const setColor = (idx: number, color: string) => {
@@ -177,7 +179,7 @@ const App: Component = () => {
         </div>
       </Card>
       <Legend legend={displayer().legend} colors={state.colors} setColor={setColor}/>
-      <ConfigView config={state.config} isRunning={state.isRunning} actions={actions}/>
+      <ConfigView config={state.config} isRunning={state.isRunning} {...actions}/>
     </div>
   )
 }
