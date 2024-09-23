@@ -85,7 +85,7 @@ const App: Component = () => {
     const moves: {pos: number, edge: number, isMachineTurn: boolean}[] = [];
     while(true) {
       const move = isMachineTurn ? machinePlays(state.machine, pos) : adversaryPlays(pos);
-      if (move === undefined) {
+      if (move === null) {
         break;
       }
       moves.push({pos, edge: move.edge, isMachineTurn})

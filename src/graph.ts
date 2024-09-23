@@ -9,9 +9,9 @@ export type Legend = {edge: number, name: string}[];
 export type GraphDisplayer = {
   width: number,
   height: number,
-  position: (v: number) => {x: number, y: number} | undefined,
+  position: (v: number) => {x: number, y: number} | null,
   legend: Legend,
-  vertexLabel: (v: number) => string | undefined, 
+  vertexLabel: (v: number) => string | null, 
 }
 
 export type MachineBox = {edge: number, dest: number, nbBalls: number}[];
@@ -59,7 +59,7 @@ export function nimDisplayer(moves: number[]): GraphDisplayer {
     height: 400.0,
     position: v => 
       v == 0
-        ? undefined
+        ? null
         : v <= 8
         ? { x: (v - 1) * 100.0, y: 0.0 }
         : { x: (v - 9) * 100.0, y: 200.0 },
@@ -75,34 +75,34 @@ export function kingDisplayer(width: number, height: number): GraphDisplayer {
     height: 180 * maxdim,
     position: v => 
       v == 0
-        ? undefined
+        ? null
         : { x: 50 + 180 * (v % width), y: 20 + 180 * (height - 1 - (v / width | 0))},
     legend: [{edge: 0, name: "⇐"}, {edge: 1, name: "⇙"}, {edge: 2, name: "⇓"}],
-    vertexLabel: v => undefined
+    vertexLabel: v => null
   })
 }
 
-// joue un coup aléatoire, renvoit undefined si aucun coup n'existe
-export function randomPlays(machine: Machine, v: number): Edge | undefined {
+// joue un coup aléatoire, renvoit null si aucun coup n'existe
+export function randomPlays(machine: Machine, v: number): Edge | null {
   const edges = machine[v];
   if (edges.length === 0) {
-    return undefined;
+    return null;
   } else {
     return edges[Math.random() * edges.length | 0]
   }
 }
 
 // joue le coup optimal si il existe, sinon joue un coup aléatoire
-export function expertPlays(machine: Machine, losing: boolean[], v: number): Edge | undefined {
+export function expertPlays(machine: Machine, losing: boolean[], v: number): Edge | null {
   if (losing[v]) {
     return randomPlays(machine, v);
   } else {
-    return machine[v].find(({dest}) => losing[dest]);
+    return machine[v].find(({dest}) => losing[dest]) ?? null;
   }
 }
 
 // joue au hasard en fonction du nombre de balles de chaque couleur dans le casier
-export function machinePlays(machine: Machine, v: number): Edge | undefined {
+export function machinePlays(machine: Machine, v: number): Edge | null {
   const box = machine[v];
   let sum = 0;
   const psums = [];
@@ -111,7 +111,7 @@ export function machinePlays(machine: Machine, v: number): Edge | undefined {
     psums.push(sum);
   }
   if (sum == 0) {
-    return undefined;
+    return null;
   }
   let rnd = Math.random() * sum | 0
   let idx = psums.findIndex(s => rnd < s);
