@@ -2,11 +2,11 @@ import { createMemo, Component, batch } from 'solid-js';
 import { createStore, produce, SetStoreFunction } from "solid-js/store";
 import { nimDisplayer, kingDisplayer, randomPlays, expertPlays, machinePlays, graphToMachine } from './graph';
 import { Config, getGraph, initMachine, State } from './model';
-import Card from './Card';
-import ConfigView from './Config';
-import Legend from './Legend';
-import Score from './Score';
-import MachineView from './Machine';
+import Card from './components/Card';
+import ConfigView from './components/Config';
+import Legend from './components/Legend';
+import Score from './components/Score';
+import MachineView from './components/Machine';
 import { createTimer } from '@solid-primitives/timer';
 
 const baseColors: string [] = [

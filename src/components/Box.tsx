@@ -1,7 +1,7 @@
 import { Component, createMemo, For, Index, Show } from 'solid-js';
 import shuffle from 'lodash.shuffle';
-import { GraphDisplayer, MachineBox } from './graph';
-import { pseudoRandom, replicate } from './util';
+import { GraphDisplayer, MachineBox } from '../graph';
+import { pseudoRandom, replicate } from '../util';
 
 type BoxComponent = Component <{
   displayer: GraphDisplayer,

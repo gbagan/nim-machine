@@ -1,6 +1,6 @@
 import { Component, For } from "solid-js";
 import Card from "./Card";
-import { Legend } from "./graph";
+import { Legend } from "../graph";
 
 type LegendComponent = Component <{
   legend: Legend,
@@ -16,7 +16,7 @@ const LegendView: LegendComponent = props => (
           <>
             <input
               type="color"
-              class="inline w-12 h-12"
+              class="inline w-12 h-12 cursor-pointer"
               value={props.colors[edge] ?? "#000000"}
               onChange={e => props.setColor(edge, e.currentTarget.value)}
             />

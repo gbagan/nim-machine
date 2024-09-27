@@ -1,7 +1,7 @@
 import range from 'lodash.range';
 import { Component, For, Match, Switch } from 'solid-js';
 import { SetStoreFunction } from "solid-js/store";
-import { Adversary, GraphType, Config, KingType, NimType } from './model';
+import { Adversary, GraphType, Config, KingType, NimType } from '../model';
 import Card from './Card';
 
 function changeMoves(moves: number[], elem: number, b: boolean): number[] {
