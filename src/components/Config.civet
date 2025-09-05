@@ -1,0 +1,134 @@
+import range from 'lodash.range'
+import { Component, For, Match, Switch } from 'solid-js'
+import { SetStoreFunction } from "solid-js/store"
+import { Adversary, GraphType, Config, KingType, NimType } from '../model'
+import Card from './Card'
+
+function changeMoves(moves: number[], elem: number, b: boolean): number[] {
+  b ? [...moves, elem].toSorted() : moves.filter (i) => i !== elem
+}
+
+type ConfigComponent = Component<{
+  config: Config,
+  isRunning: boolean,
+  changeConfig: SetStoreFunction<Config>,
+  startMachine: () => void,
+  stopMachine: () => void,
+  setFastMode: (fastMode: boolean) => void,
+}>
+
+const ConfigView: ConfigComponent = (props) => {
+  function graphType(type: string): GraphType
+    if type === "nim"
+    then { type: "nim", size: 8, moves: [1, 2] }
+    else { type: "king", width: 3, height: 3 }
+
+  <Card title="Choix des paramètres">
+    <div class="grid grid-cols-2 gap-4">
+      <div>type de jeu</div>
+      <select
+        class="select"
+        value=props.config.graphType.type
+        onChange={(e) => props.changeConfig("graphType", graphType(e.currentTarget.value))}
+      >
+        <option value="nim">Nim</option>
+        <option value="king">Roi</option>
+      <Switch>
+        <Match when={props.config.graphType.type === "nim"}>
+          <div>Nombre de casiers</div>
+          <select
+            class="select"
+            value={(props.config.graphType as NimType).size}
+            onChange={(e) => (props.changeConfig as any)("graphType", "size", Number(e.currentTarget.value))}
+          >
+            <For each={range(8, 17)}>
+              {(i) => <option value={i}>{i}</option>}
+          <div>Coups possibles</div>
+          <div class="flex flex-row justify-between">
+            <For each={range(1, 6)}>
+              {(i) =>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={(props.config.graphType as NimType).moves.includes(i)}
+                    onChange={(e) => (props.changeConfig as any)("graphType", "moves",
+                      (moves: number[]) => changeMoves(moves, i, e.currentTarget.checked)
+                    )}
+                    class="checkbox"
+                  />
+                  <span class="ml-2 text-sm font-medium text-gray-900">{i}
+              }
+          </div>
+        <Match when={props.config.graphType.type === "king"}>
+          <div>Hauteur de la grille
+          <select
+            class="select"
+            value={(props.config.graphType as KingType).height}
+            onChange={(e) => (props.changeConfig as any)("graphType", "height", Number e.currentTarget.value)}
+          >
+            <For each=range(3, 7)>
+              {(i) => <option value={i}>{i}</option>}
+          <div>Largeur de la grille
+          <select
+            class="select"
+            value={(props.config.graphType as KingType).width}
+            onChange={(e) => (props.changeConfig as any)("graphType", "width", Number e.currentTarget.value)}
+          >
+            <For each=range(3, 7)>
+              {(i) => <option value={i}>{i}</option>}
+      
+      <div>Adversaire
+      <select
+        class="select"
+        value={props.config.adversary}
+        onChange={(e) => props.changeConfig("adversary", e.currentTarget.value as Adversary)}
+      >
+        <option value="random">Aléatoire
+        <option value="expert">Expert
+        <option value="machine">Machine
+      <div>Billes par couleur</div>
+      <input
+        type="number"
+        class="input-number"
+        min="2"
+        max="10"
+        value={props.config.ballsPerColor}
+        onChange={(e) => props.changeConfig "ballsPerColor", e.currentTarget.valueAsNumber}
+      />
+      <div>Récompense
+      <input
+        type="number"
+        class="input-number"
+        min="1"
+        value={props.config.reward}
+        onChange={(e) => props.changeConfig "reward", e.currentTarget.valueAsNumber}
+      />
+      <div>Pénalité
+      <input
+        type="number"
+        class="input-number"
+        max="0"
+        value={props.config.penalty}
+        onChange={(e) => props.changeConfig "penalty", e.currentTarget.valueAsNumber}
+      />
+      <div>La machine commence
+      <select
+        class="select"
+        value={props.config.machineStarts ? "y" : "n"}
+        onChange={(e) => props.changeConfig("machineStarts", e.currentTarget.value === "y")}
+      >
+        <option value="y">Oui</option>
+        <option value="n">Non</option>
+      <Switch>
+        <Match when={props.isRunning}>
+          <button .btn onClick=props.stopMachine>Arrêter la machine
+        <Match when={!props.isRunning}>
+          <button .btn onClick=props.startMachine>Lancer la machine
+      <button .btn
+        onPointerDown={=> props.setFastMode true}
+        onPointerUp={=> props.setFastMode false}
+        onPointerLeave={=> props.setFastMode false}
+      >Accélerer
+}
+
+export default ConfigView
