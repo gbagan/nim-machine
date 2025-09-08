@@ -1,13 +1,13 @@
-import { createMemo, Component, batch } from 'solid-js';
-import { createStore, produce, SetStoreFunction } from "solid-js/store";
-import { nimDisplayer, kingDisplayer, randomPlays, expertPlays, machinePlays, graphToMachine } from './graph';
-import { Config, getGraph, initMachine, State } from './model';
-import Card from './components/Card';
-import ConfigView from './components/Config';
-import Legend from './components/Legend';
-import Score from './components/Score';
-import MachineView from './components/Machine';
-import { createTimer } from '@solid-primitives/timer';
+import { createMemo, Component, batch } from 'solid-js'
+import { createStore, produce, SetStoreFunction } from "solid-js/store"
+import { nimDisplayer, kingDisplayer, randomPlays, expertPlays, machinePlays, graphToMachine } from './graph.civet'
+import { Config, getGraph, initMachine, State } from './model.civet'
+import Card from './components/Card.civet'
+import ConfigView from './components/Config.civet'
+import Legend from './components/Legend.civet'
+import Score from './components/Score.civet'
+import MachineView from './components/Machine.civet'
+import { createTimer } from '@solid-primitives/timer'
 
 baseColors: string[] := [
   "#f6b73c", // yellow
@@ -79,7 +79,7 @@ App: Component := =>
       moves.push {pos, edge: move.edge, isMachineTurn}
       isMachineTurn = !isMachineTurn
       pos = move.dest
-    win := isMachineTurn;
+    win := isMachineTurn
     
     setState produce (state) =>
       if win
@@ -109,9 +109,9 @@ App: Component := =>
   
   createTimer runGame, => state.isRunning && (state.fastMode ? 100 : 500), setInterval
 
-  changeConfig: SetStoreFunction<Config> := (...configSetterArgs: any[]) =>
+  changeConfig: SetStoreFunction<Config> := (...args: any[]) =>
     batch =>
-      (setState as any)("config", ...configSetterArgs);
+      (setState as any)("config", ...args)
       setState produce (state) =>
         state.victories = 0
         state.losses = 0

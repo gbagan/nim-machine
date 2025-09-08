@@ -30,17 +30,17 @@ export function nimGraph(n: number, moves: number[]): Graph
   {nodes}
 
 export function kingGraph(width: number, height: number): Graph
-  nodes: Edge[][] := new Array(width * height);
+  nodes: Edge[][] := new Array(width * height)
   for x .= 0; x < width; x++
     for y .= 0; y < height; y++
-      const node: Edge[] = [];
+      const node: Edge[] = []
       if x > 0
         node.push {edge: 0, dest: y * width + x - 1}
       if x > 0 && y > 0
         node.push {edge: 1, dest: (y-1) * width + x - 1}
       if y > 0
         node.push {edge: 2, dest: (y-1) * width + x}
-      nodes[y * width + x] = node;
+      nodes[y * width + x] = node
   {nodes}
 
 export function nimDisplayer(moves: number[]): GraphDisplayer
@@ -72,7 +72,7 @@ export function kingDisplayer(width: number, height: number): GraphDisplayer
 
 // joue un coup aléatoire, renvoit null si aucun coup n'existe
 export function randomPlays(machine: Machine, v: number): Edge | null
-  edges := machine[v];
+  edges := machine[v]
   if edges.length === 0
     null
   else

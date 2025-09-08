@@ -1,6 +1,6 @@
 import { Component, Index } from "solid-js"
-import { GraphDisplayer, Machine } from "../graph"
-import Box from "./Box"
+import { GraphDisplayer, Machine } from "../graph.civet"
+import Box from "./Box.civet"
 
 type MachineProps =
   displayer: GraphDisplayer

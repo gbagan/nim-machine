@@ -1,6 +1,6 @@
-import { Component, For } from "solid-js";
-import Card from "./Card";
-import { Legend } from "../graph";
+import { Component, For } from "solid-js"
+import Card from "./Card.civet"
+import { Legend } from "../graph.civet"
 
 type LegendProps =
   legend: Legend

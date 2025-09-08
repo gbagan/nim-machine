@@ -1,7 +1,7 @@
-import { Component, createMemo, For, Index, Show } from 'solid-js';
-import shuffle from 'lodash.shuffle';
-import { GraphDisplayer, MachineBox } from '../graph';
-import { pseudoRandom, replicate } from '../util';
+import { Component, createMemo, For, Index, Show } from 'solid-js'
+import shuffle from 'lodash.shuffle'
+import { GraphDisplayer, MachineBox } from '../graph.civet'
+import { pseudoRandom, replicate } from '../util.civet'
 
 type BoxProps =
   displayer: GraphDisplayer
@@ -20,7 +20,7 @@ const Box: Component<BoxProps> = (props) =>
     psum .= 0
     for {nbBalls, edge} of props.box
       segs.push {begin: psum / total, end: (psum+nbBalls)/total, edge}
-      psum += nbBalls;
+      psum += nbBalls
     segs
 
   <Show when=position()>

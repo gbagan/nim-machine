@@ -1,4 +1,4 @@
-import { Graph, graphToMachine, Machine, kingGraph, nimGraph } from "./graph"
+import { Graph, graphToMachine, Machine, kingGraph, nimGraph } from "./graph.civet"
 
 export type Adversary = "random" | "expert" | "machine"
 

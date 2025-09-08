@@ -1,6 +1,6 @@
 export function replicate<A>(size: number, val: A): A[]
-  a := new Array(size);
-  a.fill(val)
+  a := new Array size
+  a.fill val
   a
 
 export function pseudoRandom(n: number): number
