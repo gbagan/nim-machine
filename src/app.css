@@ -90,8 +90,7 @@ body {
   outline: 2px solid var(--blue-600);
 }
 
-.checkbox -label {
-  margin-left: 0.5rem;
+.checkbox-label {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--gray-900);

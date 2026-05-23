@@ -155,7 +155,7 @@
 
 <style>
   .body {
-    width: 30rem;
+    width: 32rem;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
