@@ -12,10 +12,10 @@
 
   const baseColors: string[] = [
     "#f6b73c", // yellow
-    "#ff0000", // red
-    "#00ffff", // cyan
-    "#90ee90", // light green 
-    "#900090", // magenta"
+    "#ef4444", // red-500
+    "#22d3ee", // cyan-400
+    "#86efac", // green-300 
+    "#8b5cf6", // violet-500
   ];
 
   let config: Config = $state({
@@ -162,6 +162,8 @@
 <style>
   .main-container {
     width: 100vw;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--purple-50), var(--violet-100), var(--indigo-100));
     display: flex;
     flex-direction: row;
     justify-content: space-around;

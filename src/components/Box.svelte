@@ -35,7 +35,7 @@
     <path
       d="M1 1 L10 109 L90 109 L99 1"
       stroke-width="3.0"
-      stroke="#000"
+      stroke="var(--main-color)"
       fill="transparent"
     />
     {#each balls as color, i}
@@ -52,7 +52,7 @@
         y="115"
         width={94 * (end - begin)}
         height="20"
-        stroke="black"
+        stroke="var(--main-color)"
         fill={colors[edge]}
       />
     {/each}

@@ -17,6 +17,7 @@
 <style>
   .card {
     border-radius: 0.25rem;
+    background: white;
     overflow: hidden;
     box-shadow: var(--shadow-lg);
     padding: 1rem;
