@@ -1,5 +1,3 @@
-import { type Graph, graphToMachine, type Machine, kingGraph, nimGraph } from "./graph";
-
 export type Adversary = "random" | "expert" | "machine";
 
 export type NimType = {
