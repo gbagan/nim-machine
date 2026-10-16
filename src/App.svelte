@@ -89,7 +89,7 @@
       isMachineTurn = !isMachineTurn;
       pos = move.dest;
     }
-    const win = isMachineTurn;
+    const win = !isMachineTurn;
     if(win) { victories++ } else { losses++ };
 
     // ajuste les billes
